@@ -1,18 +1,17 @@
-if (typeof intuit === 'undefined' || !intuit) {
-    intuit = {}; // since intuit is in global scope and because of a bug in IE we don't do a 'var intuit'.
-}
+const SERVICE_HOST = 'appcenter.intuit.com'
+const JS_PATH = '/Content/IA/';
+const VERSION = '1.3.5';
+const TAGS = ['connectToIntuit', 'blueDot', 'login']
 
-if (!intuit.ipp) {
-    intuit.ipp = {};
-}
-
-if (!intuit.ipp.anywhere) {
-    intuit.ipp.anywhere = {};
-}
+let intuit = {
+    ipp: {
+        anywhere: {}
+    }
+}; 
 
 intuit.ipp.anywhere = {
-    version: '1.3.7',
-    tags: ['connectToIntuit', 'blueDot', 'login'],
+    version: VERSION,
+    tags: TAGS,
     tagPrefix: 'ipp',
     ready: false,
     developerGaTrackerInitiated: false,
@@ -30,16 +29,8 @@ intuit.ipp.anywhere = {
                 if (!qs) {
                     qs = document.domain.match(intuit.ipp.ourDomain);
                 }
-                if (!qs || !jsSrcParts[jsSrcParts.length - 1].match('intuit.ipp.anywhere') || !jsSrc.match(/:\/\/(.[^/]+)/)) {
-                    return;
-                }
-                // get ipp's domain
-                intuit.ipp.anywhere.serviceHost = jsSrc.match(/:\/\/(.[^/]+)/)[1];
-                intuit.ipp.jQuery('head').append("<link rel='stylesheet' href='https://" + intuit.ipp.anywhere.serviceHost + "/Content/IA/intuit.ipp.anywhere.css' type='text/css' media='all' />");
-                intuit.ipp.jQuery('head').append("<!--[if IE 7]><style type='text/css'>.intuitPlatformConnectButton, .intuitPlatformReconnectButton, .intuitPlatformLoginButtonVertical, .intuitPlatformLoginButtonHorizontal, .intuitPlatformLoginButtonLogo { font-size:0; text-indent: 0; line-height: 0; overflow: hidden; }</style><![endif]-->");
-                if (intuit.ipp.anywhere.serviceHost.match(/^([a-zA-Z]+\.)?appcenter.intuit.com$/) || intuit.ipp.anywhere.serviceHost.match(/workplace.intuit.com$/)) {
-                    intuit.ipp.anywhere.serviceHost = "appcenter.intuit.com";
-                }
+
+                intuit.ipp.anywhere.serviceHost = SERVICE_HOST;
                 intuit.ipp.anywhere.ready = true;
                 if (intuit.ipp.anywhere.directAlreadyCalled) {
                     intuit.ipp.anywhere.directConnectToIntuit();
@@ -197,21 +188,6 @@ intuit.ipp.anywhere.controller = {
         var subURL = "https://" + intuit.ipp.anywhere.serviceHost + "/" + intuit.ipp.anywhere.shortName + "/subscribe";
         return subURL;
 
-    },
-
-    onConnectToIntuitWithFreeTrial: function () {
-        if (intuit.ipp.anywhere.grantUrl) {
-
-            var oauthurl = intuit.ipp.anywhere.controller.getOAuthUri();
-            oauthurl += '&startWithFreeTrial=true';
-
-            intuit.ipp.anywhere.service.openExternalPopupWindow({
-                url: oauthurl,
-                centered: true
-            });
-        }else{
-            console.log("Missing grantUrl in setup function");
-        }
     },
 
     onConnectToIntuitClicked: function (elem) {
@@ -680,3 +656,5 @@ intuit.ipp.anywhere.tracking = {
         intuit.ipp.anywhere.windowLoad();
     }
 })();
+
+export default intuit;
