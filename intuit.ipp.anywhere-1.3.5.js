@@ -11,7 +11,7 @@ if (!intuit.ipp.anywhere) {
 }
 
 intuit.ipp.anywhere = {
-    version: '1.3.5',
+    version: '1.3.7',
     tags: ['connectToIntuit', 'blueDot', 'login'],
     tagPrefix: 'ipp',
     ready: false,
@@ -197,6 +197,21 @@ intuit.ipp.anywhere.controller = {
         var subURL = "https://" + intuit.ipp.anywhere.serviceHost + "/" + intuit.ipp.anywhere.shortName + "/subscribe";
         return subURL;
 
+    },
+
+    onConnectToIntuitWithFreeTrial: function () {
+        if (intuit.ipp.anywhere.grantUrl) {
+
+            var oauthurl = intuit.ipp.anywhere.controller.getOAuthUri();
+            oauthurl += '&startWithFreeTrial=true';
+
+            intuit.ipp.anywhere.service.openExternalPopupWindow({
+                url: oauthurl,
+                centered: true
+            });
+        }else{
+            console.log("Missing grantUrl in setup function");
+        }
     },
 
     onConnectToIntuitClicked: function (elem) {
